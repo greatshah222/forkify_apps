@@ -5,9 +5,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 
+entry: 
 
 module.exports ={
-    entry: './src/js/index.js',
+    entry: ['./src/js/index.js'],
     output:
     {
         path: path.resolve(__dirname,'dist'),
@@ -22,7 +23,15 @@ module.exports ={
             template: './src/index.html'
         })
     ],
-
-
-    };
-
+    module: {
+        rules: [
+            {
+                test: /\.js$/,// test for all file using .js file
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader'
+                }
+            }
+        ]
+    }
+};
