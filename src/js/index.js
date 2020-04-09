@@ -1,4 +1,5 @@
 import Search from './models/Search';
+import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
 
 import { elements, renderLoader, clearLoader } from './views/base';
@@ -12,6 +13,13 @@ import { elements, renderLoader, clearLoader } from './views/base';
 */
 const state = {}; // empty everytime page is reloaded
 
+
+/*
+---------Search Controller-------
+---------Search Controller-------
+---------Search Controller-------
+
+*/
 const controlSearch = async () => {
     // get query from the view
     const query = searchView.getInput();
@@ -89,10 +97,67 @@ elements.searchResPages.addEventListener('click', e => {
 
 
 
-const search = new Search('pizza');
-// console.log(search);
-
-search.getResult();
-
 // here we will put our controller
 
+/*
+---------Recipe Controller-------
+---------Recipe Controller-------
+---------Recipe Controller-------
+
+*/
+
+/* testing
+const r = new Recipe(871534);
+r.getRecipe();
+console.log(r);
+
+*/
+
+// hashchange and this is always added to the window 
+
+const controlRecipe = async () => {
+    // get id from the url 
+    const id = window.location.hash.replace('#', '');
+    console.log(id);
+    if (id) {
+        // prepare the ui for changes
+
+
+        // create new recipe object
+        state.recipe = new Recipe(id);
+
+        try {
+            // get recipe data
+            await state.recipe.getRecipe();
+
+            // calculate servings and time 
+            state.recipe.calcTime();
+            state.recipe.calcServings();
+
+
+            // render recipe 
+
+            console.log(state.recipe);
+        }
+        catch (error) {
+           alert('something went wrong ');
+
+        }
+
+
+    }
+
+
+}
+// is fired everytime we chnage the id
+window.addEventListener('hashchange', controlRecipe);
+
+// is fired when the page is loaded
+
+window.addEventListener('load', controlRecipe);
+
+// since we are adding the different things in sam efunction it can be done in the following ways as well
+/*
+
+['hashchange','load'].forEach(event => window.addEventListener(event,controlRecipe));
+ */
