@@ -1,7 +1,7 @@
 import Search from './models/Search';
 import * as searchView from './views/searchView';
 
-import { elements } from './views/base';
+import { elements, renderLoader, clearLoader } from './views/base';
 
 // what is the state of app in given time frame or model?? So state management is here 
 /*
@@ -29,12 +29,18 @@ const controlSearch = async () => {
         searchView.clearInput();
         // clear the result from previous search
         searchView.clearResults();
+        // render our loader so import it first and after attach it with parent element which in our case is result and after put in dom 
+        renderLoader(elements.searchRes);
+
+
 
         // search for recipes so it gives here a promise since it is async result 
         await state.search.getResult();
 
         // render results on UI
         //console.log(state.search.result);
+        // clear the loader before we get the data
+        clearLoader();
         searchView.renderResults(state.search.result);
     }
 
@@ -52,6 +58,35 @@ elements.searchForm.addEventListener('submit', e => {
     controlSearch();
 
 });
+
+elements.searchResPages.addEventListener('click', e => {
+    // chose close to our target element
+    const btn = e.target.closest('.btn-inline');
+    //console.log(e.target);
+    if (btn) {
+        const gotoPage = parseInt(btn.dataset.goto, 10);
+        // clear result before adding pagination
+        searchView.clearResults();
+
+        searchView.renderResults(state.search.result, gotoPage);
+        //console.log(gotoPage);
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const search = new Search('pizza');

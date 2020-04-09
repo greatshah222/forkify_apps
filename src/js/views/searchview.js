@@ -10,17 +10,22 @@ export const ID =23;
 
 
 // start project 
-import {elements} from './base';
+import { elements, renderLoader } from './base';
 
 export const getInput = () => elements.searchInput.value;
-export const clearInput = () => elements.searchInput.value = ''; 
+export const clearInput = () => elements.searchInput.value = '';
 // innerHtml since we need to remove whole html content from the search result list
-export const clearResults = ()=> elements.searchResList.innerHTML = '';
+export const clearResults = () => {
+    elements.searchResList.innerHTML = '';
+    elements.searchResPages.innerHTML = '';
+};
+
+
 
 // for title  char limitation 17 is the test number
-const limitRecipeTitle = (title,limit = 17) => {
+const limitRecipeTitle = (title, limit = 17) => {
     const newTitle = [];
-    if (title.length > limit){
+    if (title.length > limit) {
         // split the title into words based on spaca and then use the reduce method
         // example chicken korma dopiaza. Here acc means accumulater
         /*
@@ -29,13 +34,13 @@ const limitRecipeTitle = (title,limit = 17) => {
           second step))acc = 6 ||  so acc +  ||cur.lenght = 11|| so newtitle =['chicken','korma']
           third step))acc = 11 ||  so acc +  ||cur.lenght = 18|| so newtitle =['chicken','korma'] so not pushed here
         */
-        title.split(' ').reduce((acc,cur)=>{
-            if (acc + cur.length <=limit){
+        title.split(' ').reduce((acc, cur) => {
+            if (acc + cur.length <= limit) {
                 newTitle.push(cur);
             }
             return acc + cur.length;
 
-        },0);
+        }, 0);
         // return result
         // join is the opposite of split so it adds the content of array into string separating them using commas
         return `${newTitle.join('')}...`;
@@ -62,11 +67,54 @@ const renderRecipe = recipe => {
     `;
     // now rendering into dom
     // insertAdjacentHtml(position,text)
-    elements.searchResList.insertAdjacentHTML('beforeend',markup);
+    elements.searchResList.insertAdjacentHTML('beforeend', markup);
+
+};
+
+// type: 'prev' or 'next'
+const createButton = (page, type) => `
+    <button class="btn-inline results__btn--${type}" data-goto=${type === 'prev' ? page - 1 : page + 1}>
+        <span>Page ${type === 'prev' ? page - 1 : page + 1}</span>
+        <svg class="search__icon">
+            <use href="img/icons.svg#icon-triangle-${type === 'prev' ? 'left' : 'right'}"></use>
+        </svg>
+    </button>
+`;
+
+
+
+// ceil round to next integer 4.4 is 5 not 4 here
+const renderButtons = (page, numResults, resPerPage) => {
+    const pages = Math.ceil(numResults / resPerPage);
+    let button;
+    if (page === 1 && pages > 1) {
+        // only btn to go to next page
+        button = createButton(page, 'next');
+    } else if (page < pages) {
+        // both button
+        button = `
+        ${ createButton(page, 'prev') }
+        ${ createButton(page, 'next') }`
+
+        ;
+
+    } else if (page === pages && pages > 1) {
+        // only btn to go to previous pages
+        button = createButton(page, 'prev');
+
+
+
+    }
+    elements.searchResPages.insertAdjacentHTML('afterbegin',button);
 
 }
 
+export const renderResults = (recipes, page = 1, resPerPage = 10) => {
+    // not display all 30 but according to our pagination which is 10 for now 
+    const start = (page - 1) * resPerPage;
+    const end = page * resPerPage;
 
-export const renderResults = recipes => {
-    recipes.forEach(renderRecipe);
-}
+    // here recipes is the array of 30 object to now we can use the slice method to copy shallow portion of array 
+    recipes.slice(start, end).forEach(renderRecipe);
+    renderButtons(page,recipes.length,resPerPage);
+};
