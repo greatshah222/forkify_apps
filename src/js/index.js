@@ -1,40 +1,63 @@
+import Search from './models/Search';
+import * as searchView from './views/searchView';
 
-/*  first way
+import { elements } from './views/base';
 
-
-// while importing the convention is that u write the import and then name which is given here as str so 
-
-// import str 
-// now imported from where so 
-// ./models/Search.  Here . means this folder and dont write extension like .js
-
-
-import str from './models/Search';
+// what is the state of app in given time frame or model?? So state management is here 
+/*
+-- search object
+-- current recipe object
+-- liked recipe
 
 */
+const state = {}; // empty everytime page is reloaded
 
-/* Second way
+const controlSearch = async () => {
+    // get query from the view
+    const query = searchView.getInput();
+    // console.log(query);
+    // TODO
+
+    // if there is a query then serach object
+
+    if (query) {
+        // new search object and add it to the state
+        state.search = new Search(query);
+
+        // prepare UI for results
+        // clear the input
+        searchView.clearInput();
+        // clear the result from previous search
+        searchView.clearResults();
+
+        // search for recipes so it gives here a promise since it is async result 
+        await state.search.getResult();
+
+        // render results on UI
+        //console.log(state.search.result);
+        searchView.renderResults(state.search.result);
+    }
 
 
-// now importing multiple things 
-// we need to use the same name to import and export. if u want to change the name u can do as foolows. After theat in the console.log part u can use a and m instead of add and multiply
-// import {add as a, multiply as m,ID} from           './views/searchview';
-
-
-import {add, multiply,ID} from './views/searchview';
-
-
-console.log(`using imported function ${add(ID,2)} and ${multiply(2,ID)}. ${str}`)
-
-*/
-/*   3rd part 
-// now the 3rd way of importing is given below we need to give name again after * ( all) so name is here searchView
-
-import * as searchView from './views/searchview';
-
-
-console.log(`using imported function ${searchView.add(searchView.ID,2)} and ${searchView.multiply(2,searchView.ID)}. ${str}`)
 
 
 
-*/
+}
+// adding event listner for the search and goes into the controller
+
+
+
+elements.searchForm.addEventListener('submit', e => {
+    e.preventDefault(); // to not allow to reload again 
+    controlSearch();
+
+});
+
+
+const search = new Search('pizza');
+// console.log(search);
+
+search.getResult();
+
+// here we will put our controller
+
