@@ -118,7 +118,7 @@ console.log(r);
 const controlRecipe = async () => {
     // get id from the url 
     const id = window.location.hash.replace('#', '');
-    console.log(id);
+
     if (id) {
         // prepare the ui for changes
 
@@ -127,8 +127,11 @@ const controlRecipe = async () => {
         state.recipe = new Recipe(id);
 
         try {
-            // get recipe data
+            // get recipe data and parse ingrediets
             await state.recipe.getRecipe();
+            // console.log(state.recipe.ingredients);
+           state.recipe.parseIngredients();
+           
 
             // calculate servings and time 
             state.recipe.calcTime();
@@ -140,7 +143,7 @@ const controlRecipe = async () => {
             console.log(state.recipe);
         }
         catch (error) {
-           alert('something went wrong ');
+          // alert('something went wrong in the main file ');
 
         }
 
