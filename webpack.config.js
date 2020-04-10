@@ -11,6 +11,7 @@ module.exports ={
     entry: ['./src/js/index.js'],
     output:
     {
+        // here the path should be only directory like dist but not dist/js because if we write dist/js it will try to inject html file into the same folder called dist/js and our index.html is not in js but in dist/js 
         path: path.resolve(__dirname,'dist'),
         filename: 'js/bundle.js'
     },

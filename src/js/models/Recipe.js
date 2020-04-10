@@ -38,7 +38,8 @@ export default class Recipe {
 // put fist plural and then singular else it wil change again in these unitsLong name
         const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
         const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
-        const units = [...unitsShort, 'kg', 'g'];
+        // ... it means all content of unitsShort
+        const units = [...unitsShort, 'kg', 'g','gm','ml'];
 
 
         const newIngredients = this.ingredients.map(el => {
@@ -107,5 +108,19 @@ export default class Recipe {
         });
 
         this.ingredients = newIngredients;
+    }
+
+    updateServings(type){
+
+        // servings 
+        const newServings = type ==='dec' ? this.servings - 1 : this.servings +1 ;
+
+
+        // ingredients
+        this.ingredients.forEach(ing => {
+           ing.count = ing.count * (newServings/ this.servings); 
+        });
+        this.servings =newServings;
+
     }
 }
