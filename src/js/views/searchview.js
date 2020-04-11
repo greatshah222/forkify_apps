@@ -13,7 +13,10 @@ export const ID =23;
 import { elements, renderLoader } from './base';
 
 export const getInput = () => elements.searchInput.value;
-export const clearInput = () => elements.searchInput.value = '';
+// here we put the curly bracket because we are doing nothing in this arrow function and it might just return the first part
+export const clearInput = () => {
+    elements.searchInput.value = '';
+};
 // innerHtml since we need to remove whole html content from the search result list
 export const clearResults = () => {
     elements.searchResList.innerHTML = '';
@@ -25,12 +28,13 @@ export const highlightSelected = id => {
 };
 
 
-
-// for title  char limitation 17 is the test number
+// for making the title less in the main page 
+// for title  char limitation 17 is the test number. limit= 17 is the default parameter which can be changed later if u wish
 const limitRecipeTitle = (title, limit = 17) => {
     const newTitle = [];
     if (title.length > limit) {
-        // split the title into words based on spaca and then use the reduce method
+        // split the title into words based on space and then use the reduce method.Reuce method has the accumulator
+        //Remeber it becomes an array.
         // example chicken korma dopiaza. Here acc means accumulater
         /*
          first step))acc = 0 ||  so acc +  ||cur.lenght = 6|| so newtitle =[chicken]
@@ -45,14 +49,27 @@ const limitRecipeTitle = (title, limit = 17) => {
             return acc + cur.length;
 
         }, 0);
-        // return result
-        // join is the opposite of split so it adds the content of array into string separating them using commas
+        // return result in array so we have to join it and we use .join
+        // join is the opposite of split so it adds the content of array into string separating them using spaces that is why we have join('')}
         return `${newTitle.join('')}...`;
 
     }
     return title;
 }
 
+
+
+/*
+ This is the easiest method to limit character by using function expression which i found in google 
+
+*/
+//  const limitRecipeTitle = (title) =>{
+//     return title.replace(/^(.{17}[^\s]*).*/, "$1"); 
+// };
+
+
+
+// here we dont need to write export in this function because we are not using this function outside this page
 const renderRecipe = recipe => {
     const markup = `
     <li>
@@ -71,6 +88,7 @@ const renderRecipe = recipe => {
     `;
     // now rendering into dom
     // insertAdjacentHtml(position,text)
+    // check internet to check where to place insertAdjacentHTML
     elements.searchResList.insertAdjacentHTML('beforeend', markup);
 
 };
@@ -119,6 +137,7 @@ export const renderResults = (recipes, page = 1, resPerPage = 10) => {
     const end = page * resPerPage;
 
     // here recipes is the array of 30 object to now we can use the slice method to copy shallow portion of array 
+    // one function for one single task so we created a function called renderRecipe
     recipes.slice(start, end).forEach(renderRecipe);
     renderButtons(page,recipes.length,resPerPage);
 };

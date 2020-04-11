@@ -69,6 +69,7 @@ export default class Search {
         // it automatically returns json so no need to convert it. No api or proxy required for us inm this project
         try {
             const res = await axios(`https://forkify-api.herokuapp.com/api/search?q=${this.query}`);
+            console.log(res);
             // this.query because query is already passed to the function before. When u console.log(res) u will get all the info from this search property and from there we knew the data name was recipes
             //console.log(res);
 

@@ -33,7 +33,7 @@ const state = {}; // empty everytime page is reloaded
 const controlSearch = async () => {
     // get query from the view
     const query = searchView.getInput();
-    // console.log(query);
+   // console.log(query);
 
     // if there is a query then search object
 
@@ -58,6 +58,7 @@ const controlSearch = async () => {
         //console.log(state.search.result);
         // clear the loader before we get the data
         clearLoader();
+        
         searchView.renderResults(state.search.result);
     }
 
