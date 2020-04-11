@@ -14,20 +14,22 @@ const formatCount = count =>{
         // count = 0.5 which will bbe 1/2
         // seperate the integer part 
 
+// we are converting into string so that we can split it and now it will become an array
+// we use map to chsnge into number
         const[int,dec] = count.toString().split('.').map(el=> parseInt(el,10));
 
         if(!dec) 
         return `${fracty(count)}`;
 
 
-
         if(int === 0) {
             // using the fractional library
             const fr = new Fraction(count);
-           return `${fr.numerator}/${fr.denominator}`;
+
+         return `${(fr.numerator)}/${(fr.denominator)}`;
         } else {
             const fr = new Fraction(count-int);
-            return `${int}${fr.numerator}/${fr.denominator}`;
+            return `${int}${(fr.numerator)}/${(fr.denominator)}`;
 
         }
 
@@ -36,6 +38,11 @@ const formatCount = count =>{
     return '?';
 
 };
+
+// here in this constIngredient 
+// in the part             
+// ${ingredient.ingredient}  it will return an array so we have to join it to make it a string which is done below in the function renderRecipe
+
 const createIngredient = ingredient => `
     <li class="recipe__item">
         <svg class="recipe__icon">
@@ -44,7 +51,8 @@ const createIngredient = ingredient => `
         <div class="recipe__count">${formatCount(ingredient.count)}</div>
         <div class="recipe__ingredient">
             <span class="recipe__unit">${ingredient.unit}</span>
-            ${ingredient.ingredient}
+            ${ingredient.ingredient} 
+            
 </div>
 </li>
 `;
@@ -70,8 +78,8 @@ export const renderRecipe = recipe => {
                 <svg class="recipe__info-icon">
                     <use href="img/icons.svg#icon-man"></use>
                 </svg>
-                <span class="recipe__info-data recipe__info-data--people">4</span>
-                <span class="recipe__info-text"> ${recipe.servings}</span>
+                <span class="recipe__info-data recipe__info-data--people">${recipe.servings}</span>
+                <span class="recipe__info-text">servings </span>
 
                 <div class="recipe__info-buttons">
                     <button class="btn-tiny btn-decrease">
@@ -102,7 +110,7 @@ export const renderRecipe = recipe => {
             </ul>
 
 
-            <button class="btn-small recipe__btn">
+            <button class="btn-small recipe__btn--add">
                 <svg class="search__icon">
                     <use href="img/icons.svg#icon-shopping-cart"></use>
                 </svg>

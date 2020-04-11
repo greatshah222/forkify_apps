@@ -22,7 +22,7 @@ export const clearResults = () => {
     elements.searchResList.innerHTML = '';
     elements.searchResPages.innerHTML = '';
 };
-
+// to make active the class we are using for css 
 export const highlightSelected = id => {
     document.querySelector(`a[href="#${id}"]`).classList.add('.results__link--active');
 };
@@ -92,8 +92,9 @@ const renderRecipe = recipe => {
     elements.searchResList.insertAdjacentHTML('beforeend', markup);
 
 };
-
+// this function is for render function
 // type: 'prev' or 'next'
+// data-goto=${type === 'prev' ? page - 1 : page + 1} will be used later to handle event 
 const createButton = (page, type) => `
     <button class="btn-inline results__btn--${type}" data-goto=${type === 'prev' ? page - 1 : page + 1}>
         <span>Page ${type === 'prev' ? page - 1 : page + 1}</span>
@@ -106,6 +107,7 @@ const createButton = (page, type) => `
 
 
 // ceil round to next integer 4.4 is 5 not 4 here
+
 const renderButtons = (page, numResults, resPerPage) => {
     const pages = Math.ceil(numResults / resPerPage);
     let button;
@@ -127,6 +129,7 @@ const renderButtons = (page, numResults, resPerPage) => {
 
 
     }
+    // now inserting button in our html 
     elements.searchResPages.insertAdjacentHTML('afterbegin',button);
 
 }
@@ -139,5 +142,7 @@ export const renderResults = (recipes, page = 1, resPerPage = 10) => {
     // here recipes is the array of 30 object to now we can use the slice method to copy shallow portion of array 
     // one function for one single task so we created a function called renderRecipe
     recipes.slice(start, end).forEach(renderRecipe);
+
+    // render pagination button
     renderButtons(page,recipes.length,resPerPage);
 };

@@ -8,16 +8,20 @@ export const elements = {
     searchRes:document.querySelector('.results'),
     searchResList:document.querySelector('.results__list'),
     searchResPages:document.querySelector('.results__pages'),
-    recipe:document.querySelector('.recipe')
-};
+    recipe:document.querySelector('.recipe'),
+    shopping:document.querySelector('.shopping__list'),
 
+
+};
+// for clearing the loader 
 export const elementStrings = {
     loader:'loader'
 };
 
 
 // building spinner for different aspect
-// we are passing the loader in the paren t element 
+// we are passing the loader in the parent element 
+// loader is the class in the css
 
 export const renderLoader = parent => {
     const loader = `
@@ -33,5 +37,7 @@ export const renderLoader = parent => {
 // deleting we have to go to parent element and then delete its child
 export const clearLoader = () => {
     const loader = document.querySelector(`.${elementStrings.loader}`);
-    if (loader) loader.parentElement.removeChild(loader);
+    // checking if it exist because it might not be there before clicking our button and we have to remove the child we have to go to pareent element and then remove its child
+    if (loader) 
+    loader.parentElement.removeChild(loader);
 };

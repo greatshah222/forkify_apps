@@ -1,7 +1,9 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
+import List from './models/List';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
+import * as listView from './views/listView';
 
 import { elements, renderLoader, clearLoader } from './views/base';
 
@@ -81,14 +83,17 @@ elements.searchForm.addEventListener('submit', e => {
 });
 
 elements.searchResPages.addEventListener('click', e => {
-    // chose close to our target element
+    // chose close to our target element becuase we have multiple target element
+    // no matter where we click it will always go to .btn-inline
     const btn = e.target.closest('.btn-inline');
     //console.log(e.target);
     if (btn) {
         const gotoPage = parseInt(btn.dataset.goto, 10);
+        // 10 means base 10 and from 0-9
+        // if we had written 2 it means 0 and 1
         // clear result before adding pagination
         searchView.clearResults();
-
+        // render result based on page
         searchView.renderResults(state.search.result, gotoPage);
         //console.log(gotoPage);
     }
@@ -119,28 +124,20 @@ elements.searchResPages.addEventListener('click', e => {
 
 */
 
-/* testing
-const r = new Recipe(871534);
-r.getRecipe();
-console.log(r);
-
-*/
-
 // hashchange and this is always added to the window 
 
 const controlRecipe = async () => {
-    // get id from the url 
+    // get id from the url and replace # so we will only get the id required for our search
     const id = window.location.hash.replace('#', '');
 
     if (id) {
         // prepare the ui for changes
         recipeView.clearRecipe();
+        // render loader means the spinning animation 
         renderLoader(elements.recipe);
 
         // make active or highlight the dom we are working
-        if(state.search)
-
-        searchView.highlightSelected(id);
+        if(state.search) searchView.highlightSelected(id);
 
 
         // create new recipe object
@@ -148,6 +145,7 @@ const controlRecipe = async () => {
 
         try {
             // get recipe data and parse ingrediets
+            // await because we want to happen in the background and we are getting data from the api
             await state.recipe.getRecipe();
             //console.log(state.recipe.ingredients);
             state.recipe.parseIngredients();
@@ -175,10 +173,49 @@ const controlRecipe = async () => {
 
 
 }
-// is fired everytime we chnage the id
+
+
+
+
+/*
+---------List Controller-------
+---------List Controller-------
+---------List Controller-------
+
+*/
+const controlList = ()=>{
+    // create a list if there is none yet
+
+    if(!state.list) state.list =new List();
+
+
+    // add each ingredients to the list 
+    state.recipe.ingredients.forEach(el => {
+        const item = state.list.addItem(el.count,el.unit,el.ingredient);
+        listView.renderItem(item);
+        
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// is fired everytime we chnage the hash 
+// event dose not happen when we dont change thw hash
 window.addEventListener('hashchange', controlRecipe);
 
-// is fired when the page is loaded
+// is fired when the page is loaded so that the user dont lose the page data when they reload the page
 
 window.addEventListener('load', controlRecipe);
 
@@ -194,6 +231,7 @@ window.addEventListener('load', controlRecipe);
 elements.recipe.addEventListener('click', e=>{
     if(e.target.matches('.btn-decrease,.btn-decrease *')){
         // decrease button is clicked
+        // no not allow negative serving we put the if conditon 
         if(state.recipe.servings >1){
 
         state.recipe.updateServings('dec');
@@ -205,6 +243,12 @@ elements.recipe.addEventListener('click', e=>{
         state.recipe.updateServings('inc');
         recipeView.updateServingsIngredients(state.recipe);
 
+    } else if(e.target.matches('.recipe__btn--add,.recipe__btn--add *')){
+        controlList();
     }
-})
+});
+
+
+window.l= new List();
+
 
