@@ -1,11 +1,13 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import List from './models/List';
+
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
 import * as listView from './views/listView';
 
 import { elements, renderLoader, clearLoader } from './views/base';
+import Likes from './models/Likes';
 
 
 // quest)  When we declare using const this is block scope, currently state is in global scope. Why are we able to access state within controlSearch function ?. Does this imply that scope chain is being used here .....
@@ -203,22 +205,97 @@ const controlList = ()=>{
 
 
 elements.shopping.addEventListener('click',e=>{
+    // first we will read the id by passing dataset.name so dataset.itemid to closest element
     const id = e.target.closest('.shopping__item').dataset.itemid;
 
     // handle the delete button 
+    // matches returns true or false
+    // it matches whether it is clicked in 'shopping__delete or its child
     if(e.target.matches('.shopping__delete ,  .shopping__delete  *')){
-        // delete from state
+        //   first delete from state
         state.list.deleteItem(id);
 
-        // delete form the ui
+        // then delete form the ui
         listView.deleteItem(id);
         // handle the count update
-    } else if(e.target.matches('.shopping__count-value')){
+    }
+
+});
+
+
+// this is the method event created by me which works for any change in the form of count section
+elements.shopping.addEventListener('change',e=>{
+    // first we will read the id by passing dataset.name so dataset.itemid to closest element
+    const id = e.target.closest('.shopping__item').dataset.itemid;
+
+    // handle the delete button 
+    // matches returns true or false
+    // it matches whether it is clicked in 'shopping__delete or its child
+     if(e.target.matches('.shopping__count-value')){
+         // count value will be stored here from the form and we dont need to write child because it has none
         const val = parseFloat(e.target.value);
         state.list.updateCount(id,val);
     }
 
 });
+
+
+
+
+
+
+/*
+---------Likes Controller-------
+---------Likes Controller-------
+---------Likes Controller-------
+---------Likes Controller-------
+
+
+*/
+
+// trigger the like button happens in recipe
+
+
+const controlLike = ()=>{
+    if(!state.like) state.likes = new Likes();
+    const currentID = state.recipe.id;
+    // user has not yet liked the current recipe
+    if(!state.likes.isLiked(currentID)){
+        // add like to the state
+        const newLike = state.likes.addLike(
+            currentID,
+            state.recipe.title,
+            state.recipe.author,
+            state.recipe.img
+        );
+
+        // toggle the like buttton
+    
+        // add like to the ui list 
+        console.log(state.likes);
+
+    }
+    else// USER HAS ALREADY LIKED THE CURRENT RECIPE
+        {
+            // Removelike to the state
+            state.likes.deleteLike(currentID);
+
+        // toggle the like buttton
+    
+        // Remove  like from  the ui list 
+        console.log(state.likes);
+
+
+
+    }
+
+};
+
+
+
+
+
+
 
 
 
@@ -267,11 +344,14 @@ elements.recipe.addEventListener('click', e=>{
         recipeView.updateServingsIngredients(state.recipe);
 
     } else if(e.target.matches('.recipe__btn--add,.recipe__btn--add *')){
+        // ADD INGREDIENTS TO THE SHOPPING LIST
         controlList();
+    } else if(e.target.matches('.recipe__love, .recipe__love *')) {
+        // like controller
+        controlLike();
     }
 });
 
 
-window.l= new List();
 
 
