@@ -1,5 +1,6 @@
 import { elements } from './base';
 // data-itemid=${item.id}> is for deleting like data-goto in recipe method
+
 export const renderItem = item => {
     const markup = `
         <li class="shopping__item" data-itemid=${item.id}>
@@ -19,6 +20,9 @@ export const renderItem = item => {
 };
 
 export const deleteItem = id => {
+
+    // we are using the above data-itemid to delete data like used in the recipe section
+    // we go to parent to remove the child
     const item = document.querySelector(`[data-itemid="${id}"]`);
     if (item) item.parentElement.removeChild(item);
 };
