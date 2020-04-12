@@ -1,13 +1,15 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import List from './models/List';
+import Likes from './models/Likes';
 
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
 import * as listView from './views/listView';
+import * as likesView from './views/likesView';
+
 
 import { elements, renderLoader, clearLoader } from './views/base';
-import Likes from './models/Likes';
 
 
 // quest)  When we declare using const this is block scope, currently state is in global scope. Why are we able to access state within controlSearch function ?. Does this imply that scope chain is being used here .....
@@ -163,7 +165,11 @@ const controlRecipe = async () => {
             // render recipe 
 
             clearLoader();
-            recipeView.renderRecipe(state.recipe);
+            recipeView.renderRecipe(
+                state.recipe,
+                // here to check if its liked or not
+                state.likes.isLiked(id)
+            );
         }
         catch (error) {
             // alert('something went wrong in the main file ');
@@ -257,7 +263,7 @@ elements.shopping.addEventListener('change',e=>{
 
 
 const controlLike = ()=>{
-    if(!state.like) state.likes = new Likes();
+    if(!state.likes) state.likes = new Likes();
     const currentID = state.recipe.id;
     // user has not yet liked the current recipe
     if(!state.likes.isLiked(currentID)){
@@ -270,29 +276,51 @@ const controlLike = ()=>{
         );
 
         // toggle the like buttton
+        // this is true beacuse this situation happens only after user has liked the recipe
+        likesView.toggleLikeBtn(true);
     
         // add like to the ui list 
+
+        likesView.renderLike(newLike);
         console.log(state.likes);
 
     }
-    else// USER HAS ALREADY LIKED THE CURRENT RECIPE
+    else
+    // USER HAS ALREADY LIKED THE CURRENT RECIPE
         {
             // Removelike to the state
-            state.likes.deleteLike(currentID);
+        state.likes.deleteLike(currentID);
 
         // toggle the like buttton
+        likesView.toggleLikeBtn(false);
+
     
         // Remove  like from  the ui list 
         console.log(state.likes);
+        likesView.deleteLike(currentID);
+
 
 
 
     }
+    likesView.toggleLikeMenu(state.likes.getNumLikes());
 
 };
 
 
 
+// restore likes recipe on page load
+
+window.addEventListener('load',()=>{
+state.likes = new Likes();
+// restore likes
+state.likes.readStorage();
+// toggle button
+likesView.toggleLikeMenu(state.likes.getNumLikes());
+// render the existing likes
+state.likes.likes.forEach(like=>likesView.renderLike(like));
+
+});
 
 
 
